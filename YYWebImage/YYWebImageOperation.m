@@ -409,31 +409,35 @@ static void URLInBlackListAdd(NSURL *url) {
               task:(NSURLSessionTask *)task
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler {
-    NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
-    NSURLCredential *credential = nil;
-    
-    if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
-        if (!(self.options & YYWebImageOptionAllowInvalidSSLCertificates)) {
-            disposition = NSURLSessionAuthChallengePerformDefaultHandling;
-        } else {
-            credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
-            disposition = NSURLSessionAuthChallengeUseCredential;
-        }
-    } else {
-        if (challenge.previousFailureCount == 0) {
-            if (self.credential) {
-                credential = self.credential;
+    @autoreleasepool {
+        [_lock lock];
+        NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+        NSURLCredential *credential = nil;
+        
+        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+            if (!(self.options & YYWebImageOptionAllowInvalidSSLCertificates)) {
+                disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+            } else {
+                credential = [NSURLCredential credentialForTrust:challenge.protectionSpace.serverTrust];
                 disposition = NSURLSessionAuthChallengeUseCredential;
+            }
+        } else {
+            if (challenge.previousFailureCount == 0) {
+                if (self.credential) {
+                    credential = self.credential;
+                    disposition = NSURLSessionAuthChallengeUseCredential;
+                } else {
+                    disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+                }
             } else {
                 disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
             }
-        } else {
-            disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
         }
-    }
-    
-    if (completionHandler) {
-        completionHandler(disposition, credential);
+        
+        if (completionHandler) {
+            completionHandler(disposition, credential);
+        }
+        [_lock unlock];
     }
 }
 
@@ -538,10 +542,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
           dataTask:(NSURLSessionDataTask *)dataTask
 didReceiveResponse:(NSURLResponse *)response
  completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
-    // TODO: 收到了响应头
-    NSLog(@"%s", __func__);
-    
     @autoreleasepool {
+        [_lock lock];
         NSURLSessionResponseDisposition disposition = NSURLSessionResponseAllow;
         NSError *error = nil;
         
@@ -568,6 +570,7 @@ didReceiveResponse:(NSURLResponse *)response
         }
         
         !completionHandler ?: completionHandler(disposition);
+        [_lock unlock];
     }
 }
 
@@ -703,18 +706,15 @@ didReceiveResponse:(NSURLResponse *)response
           dataTask:(NSURLSessionDataTask *)dataTask
  willCacheResponse:(NSCachedURLResponse *)proposedResponse
  completionHandler:(void (^)(NSCachedURLResponse * _Nullable cachedResponse))completionHandler {
-    // TODO: 缓存数据,这里可以使用系统默认的就行，这个是要将response缓存起来
-    NSLog(@"%s", __func__);
-    
-    // The follow code from `SDWebImage`
-    NSCachedURLResponse *cachedResponse = proposedResponse;
-    
-    if (!(self.options & YYWebImageOptionUseNSURLCache)) {
-        // Prevents caching of responses
-        cachedResponse = nil;
-    }
-    if (completionHandler) {
-        completionHandler(cachedResponse);
+    @autoreleasepool {
+        NSCachedURLResponse *cachedResponse = proposedResponse;
+        if (!(self.options & YYWebImageOptionUseNSURLCache)) {
+            // Prevents caching of responses
+            cachedResponse = nil;
+        }
+        if (completionHandler) {
+            completionHandler(cachedResponse);
+        }
     }
 }
 
