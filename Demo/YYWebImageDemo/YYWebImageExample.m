@@ -133,41 +133,17 @@
          You can add your image url here.
          */
         
-        // progressive jpeg
-        @"https://raw.githubusercontent.com/ibireme/YYWebImage/master/Demo/YYWebImageDemo/mew_progressive.jpg",
+        // gif
+        @"http://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594903992732&di=d15bd46ce87ac0fbee7e0c50efd7c9fa&imgtype=0&src=http%3A%2F%2Ffiles.focusky.com.cn%2Fweb%2Fimages%2Ffeatures%2F05.gif",
+        @"http://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594904085133&di=2cf74309450aae5732bb5842341d1244&imgtype=0&src=http%3A%2F%2Fimg.mp.itc.cn%2Fupload%2F20170303%2F6e1f0bfbbcd146eb8349b4b0ba387ec6.gif",
         
-        // animated gif
-        @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594901957409&di=546ad3567b5913d24d8fba42785fc7e7&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20180106%2F41cffa2741e0484c967e7cee7712edfa.gif",
-        @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594901980090&di=5e033b46e31a11b9ba1abcd77c24dda1&imgtype=0&src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201308%2F01%2F20130801101920_eQjie.thumb.700_0.gif",
-        @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594902015963&di=5c726a371dd08c01bcf13a2521fdda81&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fblog%2F201402%2F14%2F20140214125747_EfjVP.thumb.700_0.gif",
+        // jpg
+        @"http://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594902709421&di=2a3b67585e86a72e425d46ca7b274d00&imgtype=0&src=http%3A%2F%2Fimage.biaobaiju.com%2Fuploads%2F20190508%2F18%2F1557312440-erzSEPjFpl.jpg",
+        @"http://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594902709421&di=5b34339823b914769863d49fe813eda4&imgtype=0&src=http%3A%2F%2Fimage.biaobaiju.com%2Fuploads%2F20180830%2F22%2F1535637647-sSIBadeLyg.jpeg",
+        @"http://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594903917873&di=46983fec1a6842eaf9f30a89e6436e42&imgtype=0&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D1520821609%2C4097703303%26fm%3D214%26gp%3D0.jpg",
         
-        // animated gif: https://dribbble.com/markpear
-        @"https://d13yacurqjgara.cloudfront.net/users/345826/screenshots/1780193/dots18.gif",
-        @"https://d13yacurqjgara.cloudfront.net/users/345826/screenshots/1809343/dots17.1.gif",
-        @"https://d13yacurqjgara.cloudfront.net/users/345826/screenshots/1845612/dots22.gif",
-        @"https://d13yacurqjgara.cloudfront.net/users/345826/screenshots/1820014/big-hero-6.gif",
-        @"https://d13yacurqjgara.cloudfront.net/users/345826/screenshots/1819006/dots11.0.gif",
-        @"https://d13yacurqjgara.cloudfront.net/users/345826/screenshots/1799885/dots21.gif",
         
-        // animaged gif: https://dribbble.com/jonadinges
-        @"https://d13yacurqjgara.cloudfront.net/users/288987/screenshots/2025999/batman-beyond-the-rain.gif",
-        @"https://d13yacurqjgara.cloudfront.net/users/288987/screenshots/1855350/r_nin.gif",
-        @"https://d13yacurqjgara.cloudfront.net/users/288987/screenshots/1963497/way-back-home.gif",
-        @"https://d13yacurqjgara.cloudfront.net/users/288987/screenshots/1913272/depressed-slurp-cycle.gif",
-        
-        // jpg: https://dribbble.com/snootyfox
-        @"https://d13yacurqjgara.cloudfront.net/users/26059/screenshots/2047158/beerhenge.jpg",
-        @"https://d13yacurqjgara.cloudfront.net/users/26059/screenshots/2016158/avalanche.jpg",
-        @"https://d13yacurqjgara.cloudfront.net/users/26059/screenshots/1839353/pilsner.jpg",
-        @"https://d13yacurqjgara.cloudfront.net/users/26059/screenshots/1833469/porter.jpg",
-        @"https://d13yacurqjgara.cloudfront.net/users/26059/screenshots/1521183/farmers.jpg",
-        @"https://d13yacurqjgara.cloudfront.net/users/26059/screenshots/1391053/tents.jpg",
-        @"https://d13yacurqjgara.cloudfront.net/users/26059/screenshots/1399501/imperial_beer.jpg",
-        @"https://d13yacurqjgara.cloudfront.net/users/26059/screenshots/1488711/fishin.jpg",
-        @"https://d13yacurqjgara.cloudfront.net/users/26059/screenshots/1466318/getaway.jpg",
-        
-        // animated webp and apng: http://littlesvr.ca/apng/gif_apng_webp.html
-        @"http://littlesvr.ca/apng/images/BladeRunner.png",
+        // webp
         @"http://littlesvr.ca/apng/images/Contact.webp",
     ];
     
@@ -201,7 +177,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return _imageLinks.count * 4;
+    return _imageLinks.count;// * 4;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
