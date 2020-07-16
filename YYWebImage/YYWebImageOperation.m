@@ -469,7 +469,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             [_lock unlock];
         } else {
             [_lock lock];
-            // _connection = nil;
             _task = nil;
             if (![self isCancelled]) {
                 __weak typeof(self) _self = self;
