@@ -1,5 +1,8 @@
 YYWebImage
 ==============
+
+## NSURLSession is already supported
+
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/ibireme/YYWebImage/master/LICENSE)&nbsp;
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)&nbsp;
 [![CocoaPods](http://img.shields.io/cocoapods/v/YYWebImage.svg?style=flat)](http://cocoapods.org/pods/YYWebImage)&nbsp;
@@ -159,6 +162,9 @@ YYWebImage is provided under the MIT license. See LICENSE file for details.
 ---
 中文介绍
 ==============
+
+## 已经支持了 NSURLSession
+
 ![ProgressiveBlur~](https://raw.github.com/ibireme/YYWebImage/master/Demo/Demo.gif
 )
 
