@@ -224,7 +224,6 @@ static void URLInBlackListAdd(NSURL *url) {
     _options = options;
     _cache = cache;
     _cacheKey = cacheKey ? cacheKey : request.URL.absoluteString;
-    _shouldUseCredentialStorage = YES;
     _executing = NO;
     _finished = NO;
     _cancelled = NO;

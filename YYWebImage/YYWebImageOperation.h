@@ -48,15 +48,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) NSURLSessionDataTask *task; ///< The download task.
 
 /**
- Whether the URL connection should consult the credential storage for authenticating 
- the connection. Default is YES.
- 
- @discussion This is the value that is returned in the `NSURLConnectionDelegate` 
- method `-connectionShouldUseCredentialStorage:`.
- */
-@property (nonatomic) BOOL shouldUseCredentialStorage;
-
-/**
  The credential used for authentication challenges in `-connection:didReceiveAuthenticationChallenge:`.
  
  @discussion This will be overridden by any shared credentials that exist for the 

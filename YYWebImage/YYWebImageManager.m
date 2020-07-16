@@ -59,7 +59,7 @@ static UIApplication *_YYSharedApplication() {
     dispatch_once(&onceToken, ^{
         YYImageCache *cache = [YYImageCache sharedCache];
         NSOperationQueue *queue = [NSOperationQueue new];
-        queue.maxConcurrentOperationCount = 5;
+        queue.name = @"com.YYWebImageManager.ibireme";
         if ([queue respondsToSelector:@selector(setQualityOfService:)]) {
             queue.qualityOfService = NSQualityOfServiceBackground;
         }
@@ -68,9 +68,10 @@ static UIApplication *_YYSharedApplication() {
     return manager;
 }
 
-- (instancetype)init {
-    @throw [NSException exceptionWithName:@"YYWebImageManager init error" reason:@"Use the designated initializer to init." userInfo:nil];
-    return [self initWithCache:nil queue:nil];
+- (void)dealloc {
+    [_session invalidateAndCancel];
+    _session = nil;
+    [_queue cancelAllOperations];
 }
 
 - (instancetype)initWithCache:(YYImageCache *)cache queue:(NSOperationQueue *)queue {
