@@ -11,10 +11,12 @@
 #import "UIView+YYAdd.h"
 #import <ImageIO/ImageIO.h>
 #import <WebP/demux.h>
+#import "UIImageView+YYWebImage.h"
 
 @interface YYImageExample()
 @property (nonatomic, strong) NSMutableArray *titles;
 @property (nonatomic, strong) NSMutableArray *classNames;
+@property (nonatomic, strong) UIImageView *imageView;
 @end
 
 @implementation YYImageExample
@@ -29,6 +31,14 @@
     [self addCell:@"Web Image" class:@"YYWebImageExample"];
     //[self addCell:@"Benchmark" class:@"YYImageBenchmark"];
     [self.tableView reloadData];
+    
+    self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(20, 100, 200, 200)];
+    self.imageView.backgroundColor = [UIColor redColor];
+    [self.view addSubview:self.imageView];
+
+//    NSURL *URL = [NSURL URLWithString:@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594901825139&di=b73c610834744d8b18f56eece54d7a03&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F20%2F56%2F19300001056606131348564606754.jpg"];
+    NSURL *URL = [NSURL URLWithString:@"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594902015963&di=5c726a371dd08c01bcf13a2521fdda81&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fblog%2F201402%2F14%2F20140214125747_EfjVP.thumb.700_0.gif"];
+    [self.imageView yy_setImageWithURL:URL options:0];
 }
 
 - (void)addCell:(NSString *)title class:(NSString *)className {

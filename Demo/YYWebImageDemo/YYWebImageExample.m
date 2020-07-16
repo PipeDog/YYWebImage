@@ -136,10 +136,10 @@
         // progressive jpeg
         @"https://raw.githubusercontent.com/ibireme/YYWebImage/master/Demo/YYWebImageDemo/mew_progressive.jpg",
         
-        // animated gif: http://cinemagraphs.com/
-        @"http://i.imgur.com/uoBwCLj.gif",
-        @"http://i.imgur.com/8KHKhxI.gif",
-        @"http://i.imgur.com/WXJaqof.gif",
+        // animated gif
+        @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594901957409&di=546ad3567b5913d24d8fba42785fc7e7&imgtype=0&src=http%3A%2F%2F5b0988e595225.cdn.sohucs.com%2Fimages%2F20180106%2F41cffa2741e0484c967e7cee7712edfa.gif",
+        @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594901980090&di=5e033b46e31a11b9ba1abcd77c24dda1&imgtype=0&src=http%3A%2F%2Fcdn.duitang.com%2Fuploads%2Fitem%2F201308%2F01%2F20130801101920_eQjie.thumb.700_0.gif",
+        @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1594902015963&di=5c726a371dd08c01bcf13a2521fdda81&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fblog%2F201402%2F14%2F20140214125747_EfjVP.thumb.700_0.gif",
         
         // animated gif: https://dribbble.com/markpear
         @"https://d13yacurqjgara.cloudfront.net/users/345826/screenshots/1780193/dots18.gif",

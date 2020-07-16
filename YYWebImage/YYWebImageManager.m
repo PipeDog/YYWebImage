@@ -14,9 +14,12 @@
 #import "YYWebImageOperation.h"
 #import "YYImageCoder.h"
 #import <objc/runtime.h>
+#import "_YYWebImageWeakProxy.h"
+
+#define Lock() dispatch_semaphore_wait(self->_lock, DISPATCH_TIME_FOREVER)
+#define Unlock() dispatch_semaphore_signal(self->_lock)
 
 #define kNetworkIndicatorDelay (1/30.0)
-
 
 /// Returns nil in App Extension.
 static UIApplication *_YYSharedApplication() {
@@ -33,12 +36,19 @@ static UIApplication *_YYSharedApplication() {
 #pragma clang diagnostic pop
 }
 
-
 @interface _YYWebImageApplicationNetworkIndicatorInfo : NSObject
 @property (nonatomic, assign) NSInteger count;
 @property (nonatomic, strong) NSTimer *timer;
 @end
 @implementation _YYWebImageApplicationNetworkIndicatorInfo
+@end
+
+@interface YYWebImageManager () <NSURLSessionDataDelegate>
+
+@property (nonatomic, strong) NSURLSession *session;
+@property (nonatomic, strong) dispatch_semaphore_t lock;
+@property (nonatomic, strong) NSHashTable<YYWebImageOperation *> *operations;
+
 @end
 
 @implementation YYWebImageManager
@@ -49,6 +59,7 @@ static UIApplication *_YYSharedApplication() {
     dispatch_once(&onceToken, ^{
         YYImageCache *cache = [YYImageCache sharedCache];
         NSOperationQueue *queue = [NSOperationQueue new];
+        queue.maxConcurrentOperationCount = 5;
         if ([queue respondsToSelector:@selector(setQualityOfService:)]) {
             queue.qualityOfService = NSQualityOfServiceBackground;
         }
@@ -62,16 +73,24 @@ static UIApplication *_YYSharedApplication() {
     return [self initWithCache:nil queue:nil];
 }
 
-- (instancetype)initWithCache:(YYImageCache *)cache queue:(NSOperationQueue *)queue{
+- (instancetype)initWithCache:(YYImageCache *)cache queue:(NSOperationQueue *)queue {
     self = [super init];
-    if (!self) return nil;
-    _cache = cache;
-    _queue = queue;
-    _timeout = 15.0;
-    if (YYImageWebPAvailable()) {
-        _headers = @{ @"Accept" : @"image/webp,image/*;q=0.8" };
-    } else {
-        _headers = @{ @"Accept" : @"image/*;q=0.8" };
+    if (self) {
+        _cache = cache;
+        _queue = queue;
+        _timeout = 15.f;
+        
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        id delegate = [_YYWebImageWeakProxy proxyWithTarget:self];
+        _session = [NSURLSession sessionWithConfiguration:configuration delegate:delegate delegateQueue:queue];
+        _lock = dispatch_semaphore_create(1);
+        _operations = [NSHashTable weakObjectsHashTable];
+        
+        if (YYImageWebPAvailable()) {
+            _headers = @{@"Accept" : @"image/webp,image/*;q=0.8"};
+        } else {
+            _headers = @{@"Accept" : @"image/*;q=0.8"};
+        }
     }
     return self;
 }
@@ -81,23 +100,24 @@ static UIApplication *_YYSharedApplication() {
                                     progress:(YYWebImageProgressBlock)progress
                                    transform:(YYWebImageTransformBlock)transform
                                   completion:(YYWebImageCompletionBlock)completion {
-    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.timeoutInterval = _timeout;
     request.HTTPShouldHandleCookies = (options & YYWebImageOptionHandleCookies) != 0;
     request.allHTTPHeaderFields = [self headersForURL:url];
     request.HTTPShouldUsePipelining = YES;
     request.cachePolicy = (options & YYWebImageOptionUseNSURLCache) ?
-        NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;
+    NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;
     
-    YYWebImageOperation *operation = [[YYWebImageOperation alloc] initWithRequest:request
+    YYWebImageOperation *operation = [[YYWebImageOperation alloc] initWithSession:_session
+                                                                          request:request
                                                                           options:options
                                                                             cache:_cache
                                                                          cacheKey:[self cacheKeyForURL:url]
                                                                          progress:progress
                                                                         transform:transform ? transform : _sharedTransformBlock
                                                                        completion:completion];
-
+    [_operations addObject:operation];
+    
     if (_username && _password) {
         operation.credential = [NSURLCredential credentialWithUser:_username password:_password persistence:NSURLCredentialPersistenceForSession];
     }
@@ -122,9 +142,76 @@ static UIApplication *_YYSharedApplication() {
     return _cacheKeyFilter ? _cacheKeyFilter(url) : url.absoluteString;
 }
 
+#pragma mark - Tool Methods
+- (YYWebImageOperation *)_operationWithTask:(NSURLSessionTask *)task {
+    for (YYWebImageOperation *operation in self.operations.allObjects) {
+        if (operation.task.taskIdentifier == task.taskIdentifier) {
+            return operation;
+        }
+    }
+    
+    return nil;
+}
 
+#pragma mark - NSURLSessionTaskDelegate
 
-#pragma mark Network Indicator
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * _Nullable credential))completionHandler {
+    YYWebImageOperation *operation = [self _operationWithTask:task];
+    if ([operation respondsToSelector:@selector(URLSession:task:didReceiveChallenge:completionHandler:)]) {
+        [operation URLSession:session task:task didReceiveChallenge:challenge completionHandler:completionHandler];
+    } else {
+        !completionHandler ?: completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+didCompleteWithError:(nullable NSError *)error {
+    YYWebImageOperation *operation = [self _operationWithTask:task];
+    if ([operation respondsToSelector:@selector(URLSession:task:didCompleteWithError:)]) {
+        [operation URLSession:session task:task didCompleteWithError:error];
+    }
+}
+
+#pragma mark - NSURLSessionDataDelegate
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+didReceiveResponse:(NSURLResponse *)response
+ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
+    YYWebImageOperation *operation = [self _operationWithTask:dataTask];
+    if ([operation respondsToSelector:@selector(URLSession:dataTask:didReceiveResponse:completionHandler:)]) {
+        [operation URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
+    } else {
+        !completionHandler ?: completionHandler(NSURLSessionResponseAllow);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data {
+    YYWebImageOperation *operation = [self _operationWithTask:dataTask];
+    if ([operation respondsToSelector:@selector(URLSession:dataTask:didReceiveData:)]) {
+        [operation URLSession:session dataTask:dataTask didReceiveData:data];
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+ willCacheResponse:(NSCachedURLResponse *)proposedResponse
+ completionHandler:(void (^)(NSCachedURLResponse * _Nullable cachedResponse))completionHandler {
+    YYWebImageOperation *operation = [self _operationWithTask:dataTask];
+    if ([operation respondsToSelector:@selector(URLSession:dataTask:willCacheResponse:completionHandler:)]) {
+        [operation URLSession:session dataTask:dataTask willCacheResponse:proposedResponse completionHandler:completionHandler];
+    } else {
+        !completionHandler ?: completionHandler(proposedResponse);
+    }
+}
+
+#pragma mark - Network Indicator
 
 + (_YYWebImageApplicationNetworkIndicatorInfo *)_networkIndicatorInfo {
     return objc_getAssociatedObject(self, @selector(_networkIndicatorInfo));
@@ -148,7 +235,7 @@ static UIApplication *_YYSharedApplication() {
 + (void)_changeNetworkActivityCount:(NSInteger)delta {
     if (!_YYSharedApplication()) return;
     
-    void (^block)() = ^{
+    void (^block)(void) = ^{
         _YYWebImageApplicationNetworkIndicatorInfo *info = [self _networkIndicatorInfo];
         if (!info) {
             info = [_YYWebImageApplicationNetworkIndicatorInfo new];

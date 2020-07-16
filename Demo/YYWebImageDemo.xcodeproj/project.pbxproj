@@ -63,6 +63,7 @@
 		D9EF640E1F36E24D00AB19C3 /* YYImageProgressiveExample.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EF64071F36E24D00AB19C3 /* YYImageProgressiveExample.m */; };
 		D9EF640F1F36E24D00AB19C3 /* YYWebImageExample.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EF64091F36E24D00AB19C3 /* YYWebImageExample.m */; };
 		D9EF64101F36E24D00AB19C3 /* YYImageExampleHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = D9EF640B1F36E24D00AB19C3 /* YYImageExampleHelper.m */; };
+		DD829FD724BF2B56004D6B03 /* _YYWebImageWeakProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = DD829FD624BF2B56004D6B03 /* _YYWebImageWeakProxy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -158,6 +159,8 @@
 		D9EF64091F36E24D00AB19C3 /* YYWebImageExample.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYWebImageExample.m; sourceTree = "<group>"; };
 		D9EF640A1F36E24D00AB19C3 /* YYImageExampleHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYImageExampleHelper.h; sourceTree = "<group>"; };
 		D9EF640B1F36E24D00AB19C3 /* YYImageExampleHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYImageExampleHelper.m; sourceTree = "<group>"; };
+		DD829FD524BF2B56004D6B03 /* _YYWebImageWeakProxy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = _YYWebImageWeakProxy.h; sourceTree = "<group>"; };
+		DD829FD624BF2B56004D6B03 /* _YYWebImageWeakProxy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = _YYWebImageWeakProxy.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -247,6 +250,8 @@
 				D9EF63BE1F36DF7B00AB19C3 /* YYWebImageManager.m */,
 				D9EF63BF1F36DF7B00AB19C3 /* YYWebImageOperation.h */,
 				D9EF63C01F36DF7B00AB19C3 /* YYWebImageOperation.m */,
+				DD829FD524BF2B56004D6B03 /* _YYWebImageWeakProxy.h */,
+				DD829FD624BF2B56004D6B03 /* _YYWebImageWeakProxy.m */,
 			);
 			name = YYWebImage;
 			path = ../YYWebImage;
@@ -458,6 +463,7 @@
 				D9EF63D01F36DF7C00AB19C3 /* YYImageCache.m in Sources */,
 				D9EF63C11F36DF7C00AB19C3 /* YYCache.m in Sources */,
 				D9EF63DE1F36DFEE00AB19C3 /* UIControl+YYAdd.m in Sources */,
+				DD829FD724BF2B56004D6B03 /* _YYWebImageWeakProxy.m in Sources */,
 				D9EF63D11F36DF7C00AB19C3 /* YYWebImageManager.m in Sources */,
 				D9EF63CC1F36DF7C00AB19C3 /* YYFrameImage.m in Sources */,
 				D9EF63C41F36DF7C00AB19C3 /* YYMemoryCache.m in Sources */,

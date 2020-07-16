@@ -37,13 +37,15 @@ NS_ASSUME_NONNULL_BEGIN
      4. Put the image to cache and return it with `completion` block.
  
  */
-@interface YYWebImageOperation : NSOperation
+@interface YYWebImageOperation : NSOperation <NSURLSessionDataDelegate>
 
-@property (nonatomic, strong, readonly)           NSURLRequest      *request;  ///< The image URL request.
-@property (nullable, nonatomic, strong, readonly) NSURLResponse     *response; ///< The response for request.
-@property (nullable, nonatomic, strong, readonly) YYImageCache      *cache;    ///< The image cache.
-@property (nonatomic, strong, readonly)           NSString          *cacheKey; ///< The image cache key.
-@property (nonatomic, readonly)                   YYWebImageOptions options;   ///< The operation's option.
+@property (nonatomic, strong, readonly) NSURLRequest *request; ///< The image URL request.
+@property (nonatomic, strong, readonly) NSURL *URL; /// The image URL.
+@property (nonatomic, strong, readonly, nullable) NSURLResponse *response; ///< The response for request.
+@property (nonatomic, strong, readonly, nullable) YYImageCache *cache; ///< The image cache.
+@property (nonatomic, strong, readonly) NSString *cacheKey; ///< The image cache key.
+@property (nonatomic, assign, readonly) YYWebImageOptions options; ///< The operation's option.
+@property (nonatomic, strong, readonly) NSURLSessionDataTask *task; ///< The download task.
 
 /**
  Whether the URL connection should consult the credential storage for authenticating 
@@ -68,6 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
  You should call `start` to execute this operation, or you can add the operation
  to an operation queue.
  
+ @param session    The session used to create data task.
  @param request    The Image request. This value should not be nil.
  @param options    A mask to specify options to use for this operation.
  @param cache      An image cache. Pass nil to avoid image cache.
@@ -81,7 +84,8 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return The image request opeartion, or nil if an error occurs.
  */
-- (instancetype)initWithRequest:(NSURLRequest *)request
+- (instancetype)initWithSession:(NSURLSession *)session
+                        request:(NSURLRequest *)request
                         options:(YYWebImageOptions)options
                           cache:(nullable YYImageCache *)cache
                        cacheKey:(nullable NSString *)cacheKey
