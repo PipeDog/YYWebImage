@@ -116,7 +116,9 @@ static UIApplication *_YYSharedApplication() {
                                                                          progress:progress
                                                                         transform:transform ? transform : _sharedTransformBlock
                                                                        completion:completion];
+    dispatch_semaphore_wait(self->_lock, DISPATCH_TIME_FOREVER);
     [_operations addObject:operation];
+    dispatch_semaphore_signal(self->_lock);
     
     if (_username && _password) {
         operation.credential = [NSURLCredential credentialWithUser:_username password:_password persistence:NSURLCredentialPersistenceForSession];
@@ -144,12 +146,15 @@ static UIApplication *_YYSharedApplication() {
 
 #pragma mark - Tool Methods
 - (YYWebImageOperation *)_operationWithTask:(NSURLSessionTask *)task {
-    for (YYWebImageOperation *operation in self.operations.allObjects) {
+    dispatch_semaphore_wait(self->_lock, DISPATCH_TIME_FOREVER);
+    NSArray *operations = [self.operations.allObjects copy];
+    dispatch_semaphore_signal(self->_lock);
+    
+    for (YYWebImageOperation *operation in operations) {
         if (operation.task.taskIdentifier == task.taskIdentifier) {
             return operation;
         }
     }
-    
     return nil;
 }
 
