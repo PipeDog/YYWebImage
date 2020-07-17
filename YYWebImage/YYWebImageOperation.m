@@ -181,8 +181,6 @@ static void URLInBlackListAdd(NSURL *url) {
     #undef MAX_QUEUE_COUNT
 }
 
-
-
 - (void)dealloc {
     [_lock lock];
     if (_taskID != UIBackgroundTaskInvalid) {
@@ -353,7 +351,6 @@ static void URLInBlackListAdd(NSURL *url) {
         [self _endBackgroundTask];
     }
 }
-
 
 // runs on network thread
 - (void)_didReceiveImageFromDiskCache:(UIImage *)image {
