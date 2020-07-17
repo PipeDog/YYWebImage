@@ -21,10 +21,8 @@
 #import "YYImage.h"
 #endif
 
-
 #define MIN_PROGRESSIVE_TIME_INTERVAL 0.2
 #define MIN_PROGRESSIVE_BLUR_TIME_INTERVAL 0.4
-
 
 /// Returns nil in App Extension.
 static UIApplication *_YYSharedApplication() {
@@ -67,7 +65,6 @@ static NSData *JPEGSOSMarker() {
     });
     return marker;
 }
-
 
 static NSMutableSet *URLBlacklist;
 static dispatch_semaphore_t URLBlacklistLock;
@@ -122,7 +119,6 @@ static void URLInBlackListAdd(NSURL *url) {
 @property (nonatomic, copy) YYWebImageCompletionBlock completion;
 
 @end
-
 
 @implementation YYWebImageOperation
 @synthesize executing = _executing;
