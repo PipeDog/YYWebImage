@@ -60,6 +60,7 @@ static UIApplication *_YYSharedApplication() {
         YYImageCache *cache = [YYImageCache sharedCache];
         NSOperationQueue *queue = [NSOperationQueue new];
         queue.name = @"com.YYWebImageManager.ibireme";
+        queue.maxConcurrentOperationCount = 5;
         if ([queue respondsToSelector:@selector(setQualityOfService:)]) {
             queue.qualityOfService = NSQualityOfServiceBackground;
         }
@@ -83,7 +84,7 @@ static UIApplication *_YYSharedApplication() {
         
         NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
         id delegate = [_YYWebImageWeakProxy proxyWithTarget:self];
-        _session = [NSURLSession sessionWithConfiguration:configuration delegate:delegate delegateQueue:queue];
+        _session = [NSURLSession sessionWithConfiguration:configuration delegate:delegate delegateQueue:nil];
         _lock = dispatch_semaphore_create(1);
         _operations = [NSHashTable weakObjectsHashTable];
         

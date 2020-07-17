@@ -218,7 +218,13 @@ static void URLInBlackListAdd(NSURL *url) {
     self = [super init];
     if (!self) return nil;
     if (!request) return nil;
-    _session = session;
+    
+    if (!(_session = session)) {
+        NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
+        id delegate = [_YYWebImageWeakProxy proxyWithTarget:self];
+        _session = [NSURLSession sessionWithConfiguration:configuration delegate:delegate delegateQueue:nil];
+    }
+    
     _request = request;
     _URL = request.URL;
     _options = options;

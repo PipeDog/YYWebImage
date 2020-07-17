@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  @return The image request opeartion, or nil if an error occurs.
  */
-- (instancetype)initWithSession:(NSURLSession *)session
+- (instancetype)initWithSession:(nullable NSURLSession *)session
                         request:(NSURLRequest *)request
                         options:(YYWebImageOptions)options
                           cache:(nullable YYImageCache *)cache
