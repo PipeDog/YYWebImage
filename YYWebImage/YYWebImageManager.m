@@ -118,6 +118,8 @@ static UIApplication *_YYSharedApplication() {
                                                                          progress:progress
                                                                         transform:transform ? transform : _sharedTransformBlock
                                                                        completion:completion];
+    if (!operation) { return nil; }
+    
     dispatch_semaphore_wait(self->_lock, DISPATCH_TIME_FOREVER);
     [_operations addObject:operation];
     dispatch_semaphore_signal(self->_lock);
@@ -125,13 +127,12 @@ static UIApplication *_YYSharedApplication() {
     if (_username && _password) {
         operation.credential = [NSURLCredential credentialWithUser:_username password:_password persistence:NSURLCredentialPersistenceForSession];
     }
-    if (operation) {
-        NSOperationQueue *queue = _queue;
-        if (queue) {
-            [queue addOperation:operation];
-        } else {
-            [operation start];
-        }
+    
+    NSOperationQueue *queue = _queue;
+    if (queue) {
+        [queue addOperation:operation];
+    } else {
+        [operation start];
     }
     return operation;
 }
